@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeHint - Standalone Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .demo-btn:hover {
+            background: #0056b3;
+        }
+        
+        .demo-btn.secondary {
+            background: #6c757d;
+        }
+        
+        .demo-btn.secondary:hover {
+            background: #545b62;
+        }
+        
+        .panel-container {
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .result-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #1565c0;
+        }
+        
+        .instructions ul {
+            margin-bottom: 0;
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🎯 CodeHint - Standalone Edition</h1>
+            <p>A powerful code editor with intelligent hints - <strong>Zero Dependencies!</strong></p>
+            <p>Just include <code>codehint.js</code> and <code>keywords.js</code> in your website</p>
+        </div>
+
+        <div class="demo-section">
+            <div class="instructions">
+                <h3>✨ Features & How to Use</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Smart Code Hints</h4>
+                        <ul>
+                            <li>Type "console" to see hints</li>
+                            <li>Type "setTimeout(" for parameter hints</li>
+                            <li>Use commas to navigate parameters</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📏 Resizable Interface</h4>
+                        <ul>
+                            <li>Drag the horizontal bar to resize</li>
+                            <li>Editor and hints adjust dynamically</li>
+                            <li>Responsive on all devices</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎨 Syntax Highlighting</h4>
+                        <ul>
+                            <li>Keywords, strings, numbers highlighted</li>
+                            <li>Light and dark themes</li>
+                            <li>Line numbers included</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🚀 Easy Integration</h4>
+                        <ul>
+                            <li>Panel mode for embedding</li>
+                            <li>Modal mode for dialogs</li>
+                            <li>Custom keywords support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📱 Panel Mode Demo</h2>
+            <div class="demo-buttons">
+                <button class="demo-btn" onclick="setTheme('light')">☀️ Light Theme</button>
+                <button class="demo-btn" onclick="setTheme('dark')">🌙 Dark Theme</button>
+                <button class="demo-btn secondary" onclick="insertSampleCode()">📝 Sample Code</button>
+                <button class="demo-btn secondary" onclick="clearEditor()">🗑️ Clear</button>
+                <button class="demo-btn secondary" onclick="getCode()">📄 Get Code</button>
+            </div>
+            <div class="panel-container" id="editor-container"></div>
+            <div class="result-display" id="code-result" style="display: none;"></div>
+        </div>
+
+        <div class="demo-section">
+            <h2>💬 Modal Mode Demo</h2>
+            <div class="demo-buttons">
+                <button class="demo-btn" onclick="openModal()">🖼️ Open Modal</button>
+                <button class="demo-btn" onclick="openModalWithCode()">🌙 Dark Modal</button>
+                <button class="demo-btn secondary" onclick="openCustomModal()">🔧 Custom Keywords</button>
+            </div>
+            <div class="result-display" id="modal-result" style="display: none;"></div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📚 Integration Examples</h2>
+            
+            <h3>🚀 Quick Start (2 files only!)</h3>
+            <div class="code-example">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Website with Code Editor&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="my-editor" style="height: 400px;"&gt;&lt;/div&gt;
+
+    &lt;!-- Include the files --&gt;
+    &lt;script src="keywords.js"&gt;&lt;/script&gt;
+    &lt;script src="codehint.js"&gt;&lt;/script&gt;
+    
+    &lt;script&gt;
+        // Create editor - that's it!
+        const editor = new CodeHint('#my-editor', {
+            theme: 'light',
+            initialValue: 'console.log("Hello World!");'
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>🎨 Panel Mode</h3>
+            <div class="code-example">// Create an editor panel
+const editor = new CodeHint('#container', {
+    theme: 'light',
+    showLineNumbers: true,
+    initialValue: '// Start coding...'
+});
+
+// Get code
+const code = editor.getValue();
+
+// Set code
+editor.setValue('function test() { return true; }');
+
+// Focus editor
+editor.focus();</div>
+
+            <h3>💬 Modal Mode</h3>
+            <div class="code-example">// Open modal editor
+CodeHint.openModal({
+    theme: 'dark',
+    initialValue: 'const x = 5;'
+}).then(result => {
+    if (result !== null) {
+        console.log('User saved:', result);
+        // Do something with the code
+    } else {
+        console.log('User cancelled');
+    }
+});</div>
+
+            <h3>🔧 Custom Keywords</h3>
+            <div class="code-example">// Define your own keywords (before creating editor)
+const customKeywords = [
+    ['myFunction', 'myFunction(param1, param2)', 
+     ['param1: First parameter', 'param2: Second parameter'], 
+     'My custom function description'],
+    ['apiCall', 'apiCall(url, options)', 
+     ['url: API endpoint', 'options: Request options'], 
+     'Makes an API call']
+];
+
+const editor = new CodeHint('#container', {
+    keywords: customKeywords
+});</div>
+
+            <h3>🎯 Advanced Usage</h3>
+            <div class="code-example">// Full configuration example
+const editor = new CodeHint('#advanced-editor', {
+    theme: 'dark',                    // 'light' or 'dark'
+    showLineNumbers: true,            // Show line numbers
+    autoFocus: true,                  // Auto focus on creation
+    placeholder: 'Enter your code...', // Placeholder text
+    keywords: myCustomKeywords,       // Custom keywords array
+    initialValue: `// Welcome to CodeHint!
+function greet(name, greeting = "Hello") {
+    return greeting + ", " + name + "!";
+}
+
+console.log(greet("World"));`
+});
+
+// Event handling
+document.getElementById('save-btn').onclick = () => {
+    const code = editor.getValue();
+    localStorage.setItem('saved-code', code);
+    alert('Code saved!');
+};
+
+document.getElementById('load-btn').onclick = () => {
+    const saved = localStorage.getItem('saved-code');
+    if (saved) {
+        editor.setValue(saved);
+    }
+};</div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📋 File Structure</h2>
+            <p>All you need are these 2 files:</p>
+            <div class="code-example">📁 your-website/
+├── 📄 codehint.js     ← Main editor (copy this file)
+├── 📄 keywords.js     ← Keywords config (customize as needed)
+└── 📄 index.html      ← Your website</div>
+            
+            <h3>🎯 No Build Process Required!</h3>
+            <ul>
+                <li>✅ No npm install</li>
+                <li>✅ No webpack/vite/rollup</li>
+                <li>✅ No dependencies</li>
+                <li>✅ Works in any browser</li>
+                <li>✅ Just include 2 files and you're done!</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Include our standalone files -->
+    <script src="keywords.js"></script>
+    <script src="codehint.js"></script>
+    
+    <script>
+        // Demo functionality
+        let demoEditor = null;
+        
+        function initDemo() {
+            demoEditor = new CodeHint('#editor-container', {
+                theme: 'light',
+                showLineNumbers: true,
+                initialValue: `// 🎯 Try these examples:
+// 1. Type "console.log(" to see parameter hints
+// 2. Type "setTimeout(" and use commas to navigate
+// 3. Try "Math.random(" or "JSON.stringify("
+// 4. Drag the bar below to resize panels
+
+console.log("Welcome to CodeHint! 🚀");
+
+function greet(name, greeting = "Hello") {
+    const message = greeting + ", " + name + "!";
+    return message;
+}
+
+// Try typing more code here...
+setTimeout(function() {
+    console.log("This runs after 1 second");
+}, 1000);
+
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+console.log("Doubled:", doubled);`
+            });
+        }
+          function setTheme(theme) {
+            if (demoEditor) {
+                const currentValue = demoEditor.getValue();
+                demoEditor.destroy();
+                demoEditor = new CodeHint('#editor-container', {
+                    theme: theme,
+                    showLineNumbers: true,
+                    initialValue: currentValue
+                });
+            }
+        }
+        
+        function insertSampleCode() {
+            if (demoEditor) {
+                demoEditor.setValue(`// 📚 JavaScript Sample Code Showcase
+class UserManager {
+    constructor(apiUrl) {
+        this.apiUrl = apiUrl;
+        this.users = [];
+    }
+    
+    async fetchUser(userId) {
+        try {
+            const response = await fetch(this.apiUrl + '/users/' + userId);
+            const user = await response.json();
+            this.users.push(user);
+            return user;
+        } catch (error) {
+            console.error('Failed to fetch user:', error);
+            throw error;
+        }
+    }
+    
+    findUser(predicate) {
+        return this.users.find(predicate);
+    }
+}
+
+// Usage example
+const manager = new UserManager('https://api.example.com');
+
+// Try typing in the editor to see hints!
+// Type "manager." to see object methods
+// Type "Math.random(" to see parameter hints
+// Type "JSON.stringify(" and use commas to navigate parameters
+
+const data = {
+    name: 'John Doe',
+    age: 30,
+    hobbies: ['coding', 'reading', 'gaming']
+};
+
+console.log('User data:', JSON.stringify(data, null, 2));`);
+            }
+        }
+        
+        function clearEditor() {
+            if (demoEditor) {
+                demoEditor.setValue('');
+                demoEditor.focus();
+            }
+        }
+        
+        function getCode() {
+            if (demoEditor) {
+                const code = demoEditor.getValue();
+                const resultEl = document.getElementById('code-result');
+                resultEl.textContent = 'Current code:\n\n' + code;
+                resultEl.style.display = 'block';
+            }
+        }
+        
+        function openModal() {
+            CodeHint.openModal({
+                theme: 'light',
+                initialValue: `// ✨ Modal Editor Demo
+// Edit this code and click Save or Cancel
+
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+const result = fibonacci(8);
+console.log('Fibonacci(8) =', result);
+
+// Try typing more code here...`
+            }).then(result => {
+                const resultEl = document.getElementById('modal-result');
+                if (result !== null) {
+                    resultEl.textContent = 'Modal returned:\n\n' + result;
+                    resultEl.style.display = 'block';
+                } else {
+                    resultEl.textContent = '❌ Modal was cancelled (user clicked Cancel or pressed Escape)';
+                    resultEl.style.display = 'block';
+                }
+            });
+        }
+        
+        function openModalWithCode() {
+            CodeHint.openModal({
+                theme: 'dark',
+                initialValue: `// 🌙 Dark Theme Modal
+// This modal uses the dark theme
+
+class Calculator {
+    constructor() {
+        this.history = [];
+    }
+    
+    add(a, b) {
+        const result = a + b;
+        this.history.push(\`\${a} + \${b} = \${result}\`);
+        return result;
+    }
+    
+    getHistory() {
+        return this.history;
+    }
+}
+
+const calc = new Calculator();
+console.log('5 + 3 =', calc.add(5, 3));
+console.log('History:', calc.getHistory());
+
+// Try the hints: type "calc." or "Math." or "console."`
+            }).then(result => {
+                const resultEl = document.getElementById('modal-result');
+                if (result !== null) {
+                    resultEl.textContent = 'Dark modal returned:\n\n' + result;
+                    resultEl.style.display = 'block';
+                } else {
+                    resultEl.textContent = '❌ Dark modal was cancelled';
+                    resultEl.style.display = 'block';
+                }
+            });
+        }
+        
+        function openCustomModal() {
+            // Define custom keywords for this demo
+            const customKeywords = [
+                ['myAPI', 'myAPI(endpoint, data)', ['endpoint: API endpoint URL', 'data: Request data object'], 'Custom API function'],
+                ['dbQuery', 'dbQuery(table, where, select)', ['table: Database table name', 'where: WHERE clause object', 'select: Columns to select'], 'Database query function'],
+                ['validate', 'validate(data, rules)', ['data: Data to validate', 'rules: Validation rules object'], 'Data validation function'],
+                ['transform', 'transform(input, options)', ['input: Input data', 'options: Transformation options'], 'Data transformation function']
+            ];
+            
+            CodeHint.openModal({
+                theme: 'light',
+                keywords: customKeywords,
+                initialValue: `// 🔧 Custom Keywords Demo
+// This modal has custom keywords defined
+// Try typing: myAPI, dbQuery, validate, transform
+
+// Example usage of custom functions:
+const userData = {
+    name: 'John',
+    email: 'john@example.com',
+    age: 25
+};
+
+// Type "validate(" to see custom hints
+validate(userData, {
+    name: 'required|string',
+    email: 'required|email',
+    age: 'required|number|min:18'
+});
+
+// Type "myAPI(" to see custom parameter hints
+myAPI('/users', userData);
+
+// Type "dbQuery(" for database query hints
+dbQuery('users', { active: true }, ['id', 'name', 'email']);
+
+// Your custom keywords work just like built-in ones!`
+            }).then(result => {
+                const resultEl = document.getElementById('modal-result');
+                if (result !== null) {
+                    resultEl.textContent = 'Custom keywords modal returned:\n\n' + result;
+                    resultEl.style.display = 'block';
+                } else {
+                    resultEl.textContent = '❌ Custom keywords modal was cancelled';
+                    resultEl.style.display = 'block';
+                }
+            });
+        }
+        
+        // Initialize demo when page loads
+        window.addEventListener('load', initDemo);
+    </script>
+</body>
+</html>

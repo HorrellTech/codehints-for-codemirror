@@ -1,0 +1,27 @@
+{
+  "name": "codehints-for-codemirror",
+  "version": "1.0.0",
+  "description": "A CodeMirror panel and modal for code hints",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "keywords": ["codemirror", "code-hints", "editor", "autocomplete"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.26.3",
+    "@codemirror/basic-setup": "^0.20.0",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/autocomplete": "^6.16.0",
+    "@codemirror/commands": "^6.5.0",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/theme-one-dark": "^6.1.2"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
